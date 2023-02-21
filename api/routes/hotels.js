@@ -1,4 +1,8 @@
 import Hotel from './../models/Hotel.js'
+import {
+    responseSuccess,
+    responseError
+} from '../response/response-state.js'
 import express from 'express'
 
 const router = express.Router()
@@ -10,16 +14,14 @@ router.post('/', async (req, res) => {
     try {
         const savedHotel = await newHotel.save()
 
-        res.status(200).json(savedHotel)
+        responseSuccess(res, savedHotel)
     } catch (err) {
-        res.status(500).json(err)
+        responseError(res, err)
     }
 })
 
 //* UPDATE
 router.put('/:id', async (req, res) => {
-    const newHotel = new Hotel(req.body)
-
     try {
         const updateHotel = await Hotel.findByIdAndUpdate(
             req.params.id,
@@ -27,48 +29,42 @@ router.put('/:id', async (req, res) => {
             { new: true }
         )
 
-        res.status(200).json(updateHotel)
+        responseSuccess(res, updateHotel)
     } catch (err) {
-        res.status(500).json(err)
+        responseError(res, err)
     }
 })
 
 //* DELETE
 router.delete('/:id', async (req, res) => {
-    const newHotel = new Hotel(req.body)
-
     try {
         await Hotel.findByIdAndDelete(req.params.id)
 
         res.status(200).json('Hotel has been deleted')
     } catch (err) {
-        res.status(500).json(err)
+        responseError(res, err)
     }
 })
 
 //* GET
 router.get('/:id', async (req, res) => {
-    const newHotel = new Hotel(req.body)
-
     try {
         const hotel = await Hotel.findById(req.params.id)
 
-        res.status(200).json(hotel)
+        responseSuccess(res, hotel)
     } catch (err) {
-        res.status(500).json(err)
+        responseError(res, err)
     }
 })
 
 //* GET ALL
-router.get('/', async (req, res) => {
-    const newHotel = new Hotel(req.body)
-
+router.get('/', async (req, res, next) => {
     try {
-        const hotel = await Hotel.find(req.params.id)
+        const hotels = await Hotel.findById("kjnknkj")
 
-        res.status(200).json(hotel)
+        responseSuccess(res, hotels)
     } catch (err) {
-        res.status(500).json(err)
+        next(err)
     }
 })
 
